@@ -1,10 +1,22 @@
 import sys
 import time
+import os       # file system related functionality
 import MongoConnection
 import pymongo  # mongodb python driver
 
 from watchdog.observers import Observer                   # import observer 
 from watchdog.events import PatternMatchingEventHandler	 
+
+class FileStatHandler:
+	""" class to extract and get files attributes """
+	def get_inode(self,src_path):
+		""" return inode of file """
+		return os.stat(src_path).ST_INO
+
+	def get_modified_time(self,src_path):
+		""" return modified time of file """
+		return os.stat(src_path).ST_MTIME
+
 
 class DatabaseHandler:
 	""" class to make changes in the db according the event"""
@@ -12,14 +24,22 @@ class DatabaseHandler:
 		""" Init mongodb connection"""
 		connection = MongoConnection()
 		db = connection.fileengine
+		collection = db.meta
+		file_handler = FileStatHandler()
 
 	def file_present?(self,inode):
 		""" check if file is present in the database"""
-		if db.meta.find({inode:inode}):
+		if collection.find({inode:inode}):
 			return True
 		else:
 			return False
-			
+
+	def update_modified_time(self,src_path):
+		""" update only modified time of file """
+		inode = file_handler.get_inode(src_path)
+		file_modified_time = file_handler.get_modified_time(src_path)
+		collection.update_one({inode:inode},$set:{modified_time:file_modified_time})
+
 
 class DeepSearchHandler(object):
 	""" Deep file search handler to handle the events gengerated by file changes """
