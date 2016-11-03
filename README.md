@@ -8,12 +8,12 @@
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Install mongodb
+* Install python
+* Install pip
+* pip install watchdog
+* run deamon.py 
+* enjoy...!
 
 ### Contribution guidelines ###
 
@@ -23,4 +23,3 @@
 ### Who do I talk to? ###
 
 * Repo owner or admin
-* Other community or team contact
