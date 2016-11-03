@@ -6,9 +6,11 @@ class DatabaseHandler:
 	def __init__(self):
 		""" Init mongodb connection"""
 		connection = MongoConnection()
-		db = connection.fileengine
-		collection = db.meta
+		collection = connection.db.meta
 		file_handler = FileStatHandler()
+
+	def create(self,src_path):
+		""" add new file entry into db """
 
 	def file_present?(self,inode):
 		""" check if file is present in the database"""
