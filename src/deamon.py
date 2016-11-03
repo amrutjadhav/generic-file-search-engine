@@ -3,30 +3,32 @@ import time
 import os       # file system related functionality
 
 # custom modules import
-from databasehandler import DatabaseHandler 
-from fileStathandler import FileStatHandler
-
+from databasehandler import DatabaseHandler
 
 from watchdog.observers import Observer                   # import observer 
 from watchdog.events import PatternMatchingEventHandler	 
 
-class DeepSearchHandler(object):
+class DeepSearchHandler(PatternMatchingEventHandler):
 	""" Deep file search handler to handle the events gengerated by file changes """
 	def __init__(self):	
 		patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3"]
+		datahandler = DatabaseHandler()
 
-	def on_created:
+	def on_created(self,event):
 		"""Called when a file or directory is created."""
+		datahandler.create(event.src_path)		
 
-	def on_modified:
+	def on_modified(self,event):
 		""""Called when a file or directory is modified."""
+		datahandler.update(event.src_path)
 
-	def on_deleted:
+	def on_deleted(self,event):
 		"""" Called when a file or directory is deleted. """
+		datahandler.delete(event.src_path)
 
-
-	def on_moved:
+	def on_moved(self,event):
 		""""Called when a file or a directory is moved or renamed."""
+		datahandler.moved(event.src_path)
 
 if __name__=='__main__':
 	directory_path = "/home/atom/workspace/pytom"
