@@ -4,7 +4,8 @@ import pymongo  # mongodb python driver
 class MongoConnection(object):
 	"""docstring for MongoConnection"""
 	def __init__(self):
-		__client = MongoClient()
+		client = MongoClient()
+		db = client.fileengine
 
 if __name__=='__main__':
 	connection = MongoConnection()
