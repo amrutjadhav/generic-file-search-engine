@@ -31,6 +31,10 @@ class FileStatHandler:
 		""" return path of file """
 		return src_path
 
+	def get_size(self,src_path):
+		""" return file size in bytes """
+		return os.path.getsize(src_path)
+
 	def get_modified_time(self,src_path):
 		""" return modified time of file """
 		return time.ctime(os.path.getmtime(src_path))
