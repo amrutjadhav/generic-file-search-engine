@@ -1,11 +1,12 @@
-import sys
-import pymongo  # mongodb python driver
+# import sys
+# from pymongo import MongoClient # mongodb python driver
 
-class MongoConnection(object):
-	"""docstring for MongoConnection"""
-	def __init__(self):
-		__client = MongoClient()
+# class MongoConnection(object):
+# 	"""docstring for MongoConnection"""
+# 	def __init__(self):
+# 		client = MongoClient()
+# 		db = client.fileengine
 
-if __name__=='__main__':
-	connection = MongoConnection()
+# if __name__=='__main__':
+# 	connection = MongoConnection()
 		
