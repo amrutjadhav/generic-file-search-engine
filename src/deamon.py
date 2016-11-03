@@ -40,10 +40,11 @@ class DeepSearchHandler(PatternMatchingEventHandler):
 		self.datahandler.moved(event.src_path)
 
 if __name__=='__main__':
+	args = sys.argv[1:]
 	directory_path = "/home/atom/Pictures/"
 	handler = DeepSearchHandler()
 	observer = Observer()
-	observer.schedule(handler,path=directory_path)	# Scheduling the handler
+	observer.schedule(handler,path=args[0] if args else directory_path)	# Scheduling the handler
 	observer.start()
 	
 	try:
