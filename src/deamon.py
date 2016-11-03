@@ -11,7 +11,7 @@ from watchdog.events import PatternMatchingEventHandler
 class DeepSearchHandler(PatternMatchingEventHandler):
 	""" Deep file search handler to handle the events gengerated by file changes """
 	def __init__(self):	
-		patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3"]
+		patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt","*","*.c","*.cpp"]
 		datahandler = DatabaseHandler()
 
 	def on_created(self,event):
