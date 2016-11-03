@@ -19,11 +19,11 @@ class FileStatHandler:
 
 	def get_inode(self,src_path):
 		""" return inode of file """
-		return os.stat(src_path).ST_INO
+		return os.stat(src_path).st_ino
 
 	def get_extension(self,src_path):
 		""" return file extension """
-		if not is_directory(src_path):
+		if not self.is_directory(src_path):
 			file_name , file_extension = os.path.splitext(src_path)
 			return file_extension
 
