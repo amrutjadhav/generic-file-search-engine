@@ -1,6 +1,5 @@
-import sys
 import time
-import os       # file system related functionality
+import pdb
 
 # custom modules import
 from databasehandler import DatabaseHandler
@@ -11,34 +10,45 @@ from watchdog.events import PatternMatchingEventHandler
 class DeepSearchHandler(PatternMatchingEventHandler):
 	""" Deep file search handler to handle the events gengerated by file changes """
 	def __init__(self):	
-		patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt","*","*.c","*.cpp"]
-		datahandler = DatabaseHandler()
+		self.datahandler = DatabaseHandler()
+		self._ignore_directories = False
+		self._ignore_patterns = False
+		self._ignore_patterns = ["*.log","*.logger"]
+		self._case_sensitive = False
+		self._patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt"]
+		print "instance created"
+
 
 	def on_created(self,event):
 		"""Called when a file or directory is created."""
-		datahandler.create(event.src_path)		
+		print "file create event"+str(event)
+		self.datahandler.create(event.src_path)		
 
 	def on_modified(self,event):
 		""""Called when a file or directory is modified."""
-		datahandler.update(event.src_path)
+		print "file modify event"+str(event)
+		self.datahandler.update(event.src_path)
 
 	def on_deleted(self,event):
 		"""" Called when a file or directory is deleted. """
-		datahandler.delete(event.src_path)
+		print "file delete event"+str(event)
+		self.datahandler.delete(event.src_path)
 
 	def on_moved(self,event):
 		""""Called when a file or a directory is moved or renamed."""
-		datahandler.moved(event.src_path)
+		print "file moved event"+str(event)
+		self.datahandler.moved(event.src_path)
 
 if __name__=='__main__':
-	directory_path = "/home/atom/workspace/pytom"
+	directory_path = "/home/atom/Pictures/"
+	handler = DeepSearchHandler()
 	observer = Observer()
-	observer.schedule(DeepSearchHandler(),directory_path)	# Scheduling the handler
+	observer.schedule(handler,path=directory_path)	# Scheduling the handler
 	observer.start()
 	
 	try:
 		while True:
-			time.sleep(10)
+			time.sleep(1)
 	except KeyboardInterrupt:								# Stop execution if ctrl+'c' hits teminal
 		observer.stop()
 	finally:
