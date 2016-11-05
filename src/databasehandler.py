@@ -35,13 +35,15 @@ class DatabaseHandler:
 			create(src_path)
 		# inode = self.file_handler.get_inode(src_path)
 		file_modified_time = self.file_handler.get_modified_time(src_path)
-		self.collection.update_one({"path":src_path},{"$set":{"modified_time":file_modified_time,,"status":"modify"}})
+		updated_size = self.file_handler.get_size(src_path) 
+		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},
+									{"$set":{"modified_time":file_modified_time,"status":"modify","size":updated_size}})
 
 	def delete(self,src_path):
 		""" update the status of file which is deleted """
 		if not self.is_file_present(src_path):
 			create(src_path)
-		self.collection.update_one({"path":src_path},{"$set":{"status": "delete"}})
+		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},{"$set":{"status": "delete"}})
 
 	def access(self,src_path):
 		""" increaments accessed count of file """
@@ -49,6 +51,6 @@ class DatabaseHandler:
 			create(src_path)
 		# inode = self.file_handler.get_inode(src_path)
 		access_count = (self.collection.findOne({"inode":inode},{"_id":0,"access_count":1})) + 1  # fetch and increase access_count
-		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count,,"status":"access"}})    # save to database
+		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count,"status":"access"}})    # save to database
 
 
