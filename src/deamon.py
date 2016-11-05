@@ -58,7 +58,7 @@ if __name__=='__main__':
 	except KeyboardInterrupt:								# Stop execution if ctrl+'c' hits teminal
 		observer.stop()
 	finally:
-		handler.close_db_connection()
+		handler.close_db_connection()					#close db connection finally
 		print("Deep file search deamon terminated")
 
 	observer.join()											#	wait till thread joins
