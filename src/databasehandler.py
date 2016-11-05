@@ -24,7 +24,7 @@ class DatabaseHandler:
 
 	def is_file_present(self,src_path):
 		""" check if file is present in the database"""
-		if self.collection.find({"path":src_path}):
+		if self.collection.find({"path":src_path,"status":{"$ne": "delete"}}):
 			return True
 		else:
 			return False
