@@ -8,9 +8,9 @@ class DatabaseHandler:
 	""" class to make changes in the db according the event"""
 	def __init__(self):
 		""" Init mongodb connection"""
-		client = MongoClient()
-		db = client.fileengine
-		self.collection = db.meta
+		self.client = MongoClient()
+		self.db = self.client.fileengine
+		self.collection = self.db.meta
 		self.file_handler = FileStatHandler()
 
 	def create(self,src_path):
@@ -20,11 +20,11 @@ class DatabaseHandler:
 				"parent":self.file_handler.get_directory(src_path), "directory":self.file_handler.is_directory(src_path),
 				"create":self.file_handler.get_creation_time(src_path), "access":self.file_handler.get_accessed_time(src_path),
 				"modify":self.file_handler.get_modified_time(src_path), "size": self.file_handler.get_size(src_path),
-				"access_count":1})
+				"access_count":1,"status":"create"})
 
 	def is_file_present(self,src_path):
 		""" check if file is present in the database"""
-		if self.collection.find({"path":src_path}):
+		if self.collection.find({"path":src_path,"status":{"$ne": "delete"}}):
 			return True
 		else:
 			return False
@@ -35,13 +35,15 @@ class DatabaseHandler:
 			create(src_path)
 		# inode = self.file_handler.get_inode(src_path)
 		file_modified_time = self.file_handler.get_modified_time(src_path)
-		self.collection.update_one({"path":src_path},{"$set":{"modified_time":file_modified_time}})
+		updated_size = self.file_handler.get_size(src_path) 
+		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},
+									{"$set":{"modified_time":file_modified_time,"status":"modify","size":updated_size}})
 
 	def delete(self,src_path):
 		""" update the status of file which is deleted """
 		if not self.is_file_present(src_path):
 			create(src_path)
-		self.collection.update_one({"path":src_path},{"$set":{"status": "delete"}})
+		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},{"$set":{"status": "delete"}})
 
 	def access(self,src_path):
 		""" increaments accessed count of file """
@@ -49,6 +51,9 @@ class DatabaseHandler:
 			create(src_path)
 		# inode = self.file_handler.get_inode(src_path)
 		access_count = (self.collection.findOne({"inode":inode},{"_id":0,"access_count":1})) + 1  # fetch and increase access_count
-		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count}})    # save to database
+		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count,"status":"access"}})    # save to database
 
+	def close_connection(self):
+		""" close database connection """
+		self.client.close()
 

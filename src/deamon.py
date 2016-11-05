@@ -1,5 +1,6 @@
 import time
 import pdb
+import sys
 
 # custom modules import
 from databasehandler import DatabaseHandler
@@ -39,6 +40,10 @@ class DeepSearchHandler(PatternMatchingEventHandler):
 		print "file moved event"+str(event)
 		self.datahandler.moved(event.src_path)
 
+	def close_db_connection(self):
+		""" call close_connection function of datanadler """
+		self.datahandler.close_connection()
+
 if __name__=='__main__':
 	args = sys.argv[1:]
 	directory_path = "/home/atom/Pictures/"
@@ -53,6 +58,7 @@ if __name__=='__main__':
 	except KeyboardInterrupt:								# Stop execution if ctrl+'c' hits teminal
 		observer.stop()
 	finally:
+		handler.close_db_connection()					#close db connection finally
 		print("Deep file search deamon terminated")
 
 	observer.join()											#	wait till thread joins
