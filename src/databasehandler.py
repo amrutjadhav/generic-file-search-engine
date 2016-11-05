@@ -8,9 +8,9 @@ class DatabaseHandler:
 	""" class to make changes in the db according the event"""
 	def __init__(self):
 		""" Init mongodb connection"""
-		client = MongoClient()
-		db = client.fileengine
-		self.collection = db.meta
+		self.client = MongoClient()
+		self.db = self.client.fileengine
+		self.collection = self.db.meta
 		self.file_handler = FileStatHandler()
 
 	def create(self,src_path):
@@ -53,4 +53,7 @@ class DatabaseHandler:
 		access_count = (self.collection.findOne({"inode":inode},{"_id":0,"access_count":1})) + 1  # fetch and increase access_count
 		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count,"status":"access"}})    # save to database
 
+	def close_connection(self):
+		""" close database connection """
+		self.client.close()
 
