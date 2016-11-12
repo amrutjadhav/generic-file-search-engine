@@ -37,12 +37,16 @@ class FileStatHandler:
 
 	def get_modified_time(self,src_path):
 		""" return modified time of file """
-		return time.ctime(os.path.getmtime(src_path))
+		return date_time_conversion(os.path.getmtime(src_path))
 
 	def get_accessed_time(self,src_path):
 		""" return last accessed time of file """
-		return time.ctime(os.path.getatime(src_path))
+		return date_time_conversion(os.path.getatime(src_path))
 	
 	def get_creation_time(self,src_path):
 		""" return file creation time """
-		return time.ctime(os.path.getctime(src_path))
+		return date_time_conversion(os.path.getctime(src_path))
+
+	def date_time_conversion(self,epoch_seconds):
+		""" return the datetime value of milliseconds"""
+		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_seconds))
