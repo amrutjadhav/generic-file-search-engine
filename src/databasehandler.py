@@ -37,7 +37,7 @@ class DatabaseHandler:
 		file_modified_time = self.file_handler.get_modified_time(src_path)
 		updated_size = self.file_handler.get_size(src_path) 
 		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},
-									{"$set":{"modified_time":file_modified_time,"status":"modify","size":updated_size}})
+									{"$set":{"modify":file_modified_time,"status":"modify","size":updated_size}})
 
 	def delete(self,src_path):
 		""" update the status of file which is deleted """
@@ -57,3 +57,9 @@ class DatabaseHandler:
 		""" close database connection """
 		self.client.close()
 
+	def execute_query(self,timestamp_query,date_operator,date_object,timestamp):
+		""" Execute the file find query on db """
+		file_result = self.collection.aggregate([{"$project":{"name":1,timestamp_query:{date_operator:date_object}}},{"$match":{timestamp_query:timestamp}}])
+		# print file_result.__getitem__(0)
+		for doc in file_result:
+			print(doc["name"])
