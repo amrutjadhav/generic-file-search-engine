@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import datetime
 
 class FileStatHandler:
 	""" class to extract and get files attributes """
@@ -37,16 +38,16 @@ class FileStatHandler:
 
 	def get_modified_time(self,src_path):
 		""" return modified time of file """
-		return date_time_conversion(os.path.getmtime(src_path))
+		return self.date_time_conversion(os.path.getmtime(src_path))
 
 	def get_accessed_time(self,src_path):
 		""" return last accessed time of file """
-		return date_time_conversion(os.path.getatime(src_path))
+		return self.date_time_conversion(os.path.getatime(src_path))
 	
 	def get_creation_time(self,src_path):
 		""" return file creation time """
-		return date_time_conversion(os.path.getctime(src_path))
+		return self.date_time_conversion(os.path.getctime(src_path))
 
 	def date_time_conversion(self,epoch_seconds):
 		""" return the datetime value of milliseconds"""
-		return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch_seconds))
+		return datetime.datetime.fromtimestamp(epoch_seconds)
