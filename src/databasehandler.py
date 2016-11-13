@@ -60,6 +60,4 @@ class DatabaseHandler:
 	def execute_query(self,timestamp_query,date_operator,date_object,timestamp):
 		""" Execute the file find query on db """
 		file_result = self.collection.aggregate([{"$project":{"name":1,timestamp_query:{date_operator:date_object}}},{"$match":{timestamp_query:timestamp}}])
-		# print file_result.__getitem__(0)
-		for doc in file_result:
-			print(doc["name"])
+		return file_result

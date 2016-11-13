@@ -2,9 +2,9 @@
 
 ### What is this repository for? ###
 
-* Quick search across files
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Google for local files
+* Quick search across files. Mac like file searching for linux/windows.
+* Version 1.0
 
 ### How do I get set up? ###
 
@@ -12,14 +12,12 @@
 * Install python
 * Install pip
 * pip install watchdog
-* run deamon.py 
+* run src/deamon.py 
+* run src/query_builder.py  
 * enjoy...!
 
-### Contribution guidelines ###
 
-* Writing tests before commit
-* Code review
+### Contact ###
 
-### Who do I talk to? ###
-
-* Repo owner or admin
+* Owner = Amrut Jadhav
+* Mail = amrutjadhav2294@gmail.com
