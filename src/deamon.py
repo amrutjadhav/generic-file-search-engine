@@ -1,44 +1,37 @@
 import time
 import pdb
 import sys
+import pyinotify  # import pynotify  
 
 # custom modules import
 from databasehandler import DatabaseHandler
 
-from watchdog.observers import Observer                   # import observer 
-from watchdog.events import PatternMatchingEventHandler	 
-
-class DeepSearchHandler(PatternMatchingEventHandler):
+class DeepSearchHandler(pyinotify.ProcessEvent):
 	""" Deep file search handler to handle the events gengerated by file changes """
 	def __init__(self):	
 		self.datahandler = DatabaseHandler()
-		self._ignore_directories = False
-		self._ignore_patterns = False
-		self._ignore_patterns = ["*.log","*.logger"]
-		self._case_sensitive = False
-		self._patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt"]
+		# self._ignore_directories = False
+		# self._ignore_patterns = False
+		# self._ignore_patterns = ["*.log","*.logger"]
+		# self._case_sensitive = False
+		# self._patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt"]
 		print "instance created"
 
 
-	def on_created(self,event):
+	def process_IN_CREATE(self,event):
 		"""Called when a file or directory is created."""
 		print "file create event"+str(event)
-		self.datahandler.create(event.src_path)		
+		self.datahandler.create(event.pathname)		
 
-	def on_modified(self,event):
+	def process_IN_MODIFY(self,event):
 		""""Called when a file or directory is modified."""
 		print "file modify event"+str(event)
-		self.datahandler.update(event.src_path)
+		self.datahandler.update(event.pathname)
 
-	def on_deleted(self,event):
+	def process_IN_DELETE(self,event):
 		"""" Called when a file or directory is deleted. """
 		print "file delete event"+str(event)
-		self.datahandler.delete(event.src_path)
-
-	def on_moved(self,event):
-		""""Called when a file or a directory is moved or renamed."""
-		print "file moved event"+str(event)
-		self.datahandler.moved(event.src_path)
+		self.datahandler.delete(event.pathname)
 
 	def close_db_connection(self):
 		""" call close_connection function of datanadler """
@@ -47,18 +40,15 @@ class DeepSearchHandler(PatternMatchingEventHandler):
 if __name__=='__main__':
 	args = sys.argv[1:]
 	directory_path = "/home/atom/Pictures/"
+	watch_manager = pyinotify.WatchManager()
+	if args:
+		directory_path = args[0]
+	watch_manager.add_watch(directory_path,pyinotify.ALL_EVENTS,rec=True)
 	handler = DeepSearchHandler()
-	observer = Observer()
-	observer.schedule(handler,path=args[0] if args else directory_path)	# Scheduling the handler
-	observer.start()
-	
-	try:
-		while True:
-			time.sleep(1)
-	except KeyboardInterrupt:								# Stop execution if ctrl+'c' hits teminal
-		observer.stop()
-	finally:
-		handler.close_db_connection()					#close db connection finally
-		print("Deep file search deamon terminated")
+	notifier = pyinotify.Notifier(watch_manager, handler)
 
-	observer.join()											#	wait till thread joins
+	notifier.loop()
+
+	handler.close_db_connection()					#close db connection finally
+
+	print("Deep file search deamon terminated")
