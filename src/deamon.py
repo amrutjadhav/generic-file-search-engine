@@ -1,3 +1,11 @@
+__author__ = "Amrut Jadhav"
+__credits__ = ["Amrut Jadhav"]
+__license__ = "MIT"
+__maintainer__ = "Amrut Jadhav"
+__email__ = "amrutjadhav2294@gmail.com"
+__status__ = "Development"
+
+
 import time
 import pdb
 import sys
