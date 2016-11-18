@@ -10,11 +10,6 @@ class DeepSearchHandler(pyinotify.ProcessEvent):
 	""" Deep file search handler to handle the events gengerated by file changes """
 	def __init__(self):	
 		self.datahandler = DatabaseHandler()
-		# self._ignore_directories = False
-		# self._ignore_patterns = False
-		# self._ignore_patterns = ["*.log","*.logger"]
-		# self._case_sensitive = False
-		# self._patterns = ["*.rb","*.py","*.java","*.mp4","*.mp3","*.txt"]
 		print "instance created"
 
 
@@ -33,6 +28,11 @@ class DeepSearchHandler(pyinotify.ProcessEvent):
 		print "file delete event"+str(event)
 		self.datahandler.delete(event.pathname)
 
+	def process_IN_ACCESS(self,event):
+		"""" Called when a file or directory is accessed. """
+		print "file access event"+str(event.pathname)
+		self.datahandler.access(event.pathname)
+
 	def close_db_connection(self):
 		""" call close_connection function of datanadler """
 		self.datahandler.close_connection()
@@ -40,15 +40,16 @@ class DeepSearchHandler(pyinotify.ProcessEvent):
 if __name__=='__main__':
 	args = sys.argv[1:]
 	directory_path = "/home/atom/Pictures/"
-	watch_manager = pyinotify.WatchManager()
 	if args:
 		directory_path = args[0]
-	watch_manager.add_watch(directory_path,pyinotify.ALL_EVENTS,rec=True)
-	handler = DeepSearchHandler()
-	notifier = pyinotify.Notifier(watch_manager, handler)
 
-	notifier.loop()
+	watch_manager = pyinotify.WatchManager()			# Define watch manager
+	watch_manager.add_watch(directory_path,pyinotify.ALL_EVENTS,rec=True)	# Add watch to directory
+	handler = DeepSearchHandler()						# Create object of handler class	
+	notifier = pyinotify.Notifier(watch_manager, handler)  	# Build notifier
 
-	handler.close_db_connection()					#close db connection finally
+	notifier.loop()								# Listen to events recursively 
+
+	handler.close_db_connection()					#close db connection after loop is break
 
 	print("Deep file search deamon terminated")
