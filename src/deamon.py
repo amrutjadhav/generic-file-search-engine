@@ -1,5 +1,4 @@
 import time
-import pdb
 import sys
 import pyinotify  # import pynotify  
 
