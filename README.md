@@ -11,9 +11,9 @@
 * Install mongodb
 * Install python
 * Install pip
-* pip install watchdog
-* run src/deamon.py 
-* run src/query_builder.py  
+* pip install pyinotify
+* run src/deamon.py
+* run src/query_builder.py
 * enjoy...!
 
 
