@@ -11,11 +11,10 @@
 * Install mongodb
 * Install python
 * Install pip
-* pip install watchdog {for develop branch}
-* pip install pyinotify {for feature/pynotify branch}
+* pip install pyinotify
 * run mongod
-* run src/deamon.py 
-* run src/query_builder.py  
+* run src/deamon.py
+* run src/query_builder.py
 * enjoy...!
 
 

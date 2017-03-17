@@ -48,17 +48,14 @@ class DatabaseHandler:
 
 	def delete(self,src_path):
 		""" update the status of file which is deleted """
-		if not self.is_file_present(src_path):
-			create(src_path)
-		self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},{"$set":{"status": "delete"}})
+		if self.is_file_present(src_path):
+			self.collection.update_one({"path":src_path,"status":{"$ne": "delete"}},{"$set":{"status": "delete"}})
 
 	def access(self,src_path):
 		""" increaments accessed count of file """
 		if not self.is_file_present:
 			create(src_path)
-		# inode = self.file_handler.get_inode(src_path)
-		access_count = (self.collection.findOne({"inode":inode},{"_id":0,"access_count":1})) + 1  # fetch and increase access_count
-		self.collection.update_one({"path":src_path},{"$set":{"access_count":access_count,"status":"access"}})    # save to database
+		self.collection.update_one({"path":src_path},{"$inc":{"access_count":1}})
 
 	def close_connection(self):
 		""" close database connection """
